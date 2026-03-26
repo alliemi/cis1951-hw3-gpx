@@ -5,12 +5,11 @@
 //  Created by Tim Liang on 3/24/26.
 //
 
-import SwiftUI
+import Foundation
 import CoreLocation
 
 struct DiningHall: Identifiable {
-    var id: UUID = UUID()
-    var name: String
-    var location: CLLocation
-    var isCollected: Bool = false
+    let id: UUID = UUID()
+    let name: String
+    let location: CLLocation
 }

@@ -9,19 +9,25 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(DiningHallViewModel.self) var vm
-    @State var path: [String] = []
 
     var body: some View {
-        NavigationStack(path: $path) {
-            List(vm.diningHalls) { diningHall in
-                Button(diningHall.name) {
-                    path.append(diningHall.name)
-                    vm.currentDiningHall = diningHall
+        NavigationStack {
+            List(vm.diningHalls) { hall in
+                NavigationLink(value: hall.id) {
+                    HStack {
+                        Text(hall.name)
+                        Spacer()
+                        if vm.isCollected(hall) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        }
+                    }
                 }
             }
-            .navigationDestination(for: String.self) { _ in
-                DiningHallView()
-                    .environment(vm)
+            .navigationDestination(for: UUID.self) { id in
+                if let hall = vm.diningHalls.first(where: { $0.id == id }) {
+                    DiningHallView(diningHall: hall)
+                }
             }
             .navigationTitle("Scavenger Hunt")
         }
