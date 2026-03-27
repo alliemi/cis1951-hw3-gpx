@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct DiningHallView: View {
     @Environment(DiningHallViewModel.self) var vm
