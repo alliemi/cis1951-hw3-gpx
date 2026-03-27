@@ -14,10 +14,11 @@ struct HomeView: View {
     @State private var showPermissionSheet = false
     @State private var path: [UUID] = []
 
-    @State private var position: MapCameraPosition = .region(MKCoordinateRegion(
+    @State private var savedPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 39.9527, longitude: -75.1960),
         span: MKCoordinateSpan(latitudeDelta: 0.009, longitudeDelta: 0.009)
     ))
+    @State private var position: MapCameraPosition = .automatic
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -38,6 +39,7 @@ struct HomeView: View {
                     }
                 }
             }
+            .id(vm.collectedIDs)
             .mapStyle(.standard)
             .navigationDestination(for: UUID.self) { id in
                 if let hall = vm.diningHalls.first(where: { $0.id == id }) {
@@ -50,6 +52,10 @@ struct HomeView: View {
                 if locationManager.authorizationStatus == .notDetermined {
                     showPermissionSheet = true
                 }
+                position = savedPosition
+            }
+            .onMapCameraChange { context in
+                savedPosition = .camera(context.camera)
             }
             .sheet(isPresented: $showPermissionSheet, onDismiss: {
                 locationManager.requestPermission()

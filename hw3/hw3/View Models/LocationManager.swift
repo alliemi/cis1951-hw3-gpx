@@ -49,6 +49,9 @@ import CoreLocation
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        if let clError = error as? CLError, clError.code == .locationUnknown {
+            return
+        }
         MainActor.assumeIsolated {
             locationError = error.localizedDescription
         }
